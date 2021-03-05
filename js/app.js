@@ -342,6 +342,7 @@ function renderDefaultDashboard() {
       mode: WIDGET_TEXT,
     },
     {
+      type: "count",
       width: 260,
       margin_tooltip: 270,
       height: 200,
@@ -358,6 +359,7 @@ function renderDefaultDashboard() {
       counter: true,
     },
     {
+      type: "count",
       height: 200,
       margin_tooltip: 210,
       size: 0.5,
@@ -371,6 +373,7 @@ function renderDefaultDashboard() {
       counter: true,
     },
     {
+      type: "count",
       height: 200,
       margin_tooltip: 210,
       size: 0.5,
@@ -387,6 +390,7 @@ function renderDefaultDashboard() {
       counter: true,
     },
     {
+      type: "count",
       height: 200,
       margin_tooltip: 210,
       size: 0.5,
@@ -400,6 +404,7 @@ function renderDefaultDashboard() {
       counter: true,
     },
     {
+      type: "count",
       height: 200,
       margin_tooltip: 210,
       size: 0.5,
@@ -413,6 +418,7 @@ function renderDefaultDashboard() {
       counter: true,
     },
     {
+      type: "count",
       height: 200,
       margin_tooltip: 210,
       size: 0.5,
@@ -426,6 +432,7 @@ function renderDefaultDashboard() {
       counter: true,
     },
     {
+      type: "count",
       height: 200,
       margin_tooltip: 210,
       size: 0.5,
@@ -459,6 +466,7 @@ function renderDefaultDashboard() {
       filter: { component: ["IN (URL)"] },
     },
     {
+      type: "graph",
       width: "1012",
       margin_tooltip: 900,
       height: "300",
@@ -551,6 +559,7 @@ function renderDefaultDashboard() {
         { component: ["IN (URL)"] },
       ],
     },
+    /*
     {
       width: "1012",
       margin_tooltip: 500,
@@ -607,7 +616,9 @@ function renderDefaultDashboard() {
           }',
       field: "timestamp",
     },
+    */
     {
+      type: "graph",
       width: "1012",
       height: "300",
       title: "Interactions Across Week",
@@ -661,6 +672,7 @@ function renderDefaultDashboard() {
         },\
         data: [\
           {\
+            type: "line",\
             name: "Interactions",\
             showInLegend: true,\
             dataPoints: dataPoints\
@@ -669,7 +681,7 @@ function renderDefaultDashboard() {
       });\
       chart.render();',
       field: "timestamp",
-      calcFn: { fn: "lastconnection", field: "timestamp" },
+      calcFn: { fn: "interactionsweek", field: "timestamp" },
     },
     {
       html:
@@ -680,6 +692,47 @@ function renderDefaultDashboard() {
       mode: WIDGET_TEXT,
     },
     {
+      type: "extra",
+      width: "475",
+      height: "500",
+      title: "Members last access",
+      tooltip:"List of each member of the course and the last time they accessed the course.",
+      mode: WIDGET_CODE_SNIPPET,
+      snippet:
+        '{\
+        let interactions = dashb.widgets[2].data.values[0];\
+        let widget = document.getElementById("content_%ID%");\
+        let labels = %LABELS%;\
+        let values = %VALUES%;\
+        let height = %HEIGHT% - 100;\
+        let str = "<table>\
+            <thead>\
+                <tr>\
+                    <th class=\\"tdLeft lastAccess\\">Student</th>\
+                    <th class=\\"tdCenter lastAccess\\">Last Access</th>\
+                </tr>\
+            </thead>\
+            <tbody style=\'max-height:"+height+"px\'>";\
+        for (let i = 0; i < labels.length; i++) {\
+          if (labels[0].length){\
+            let wDate = new Date(values[i]*1000).toLocaleString();\
+            let percent = (values[i]*100)/interactions;\
+            let wDateDiff = new Date().diffTimestamp(values[i]);\
+            let wDateStr = wDateDiff.days+" dies "+wDateDiff.hours+" hores <br />"+wDateDiff.minutes+" minuts, "+Math.floor(wDateDiff.seconds)+" segons";\
+            str += "<tr>";\
+            str += "<td class=\\"tdLeft lastAccess\\">" + labels[i] + "</td>";\
+            str += "<td class=\\"tdCenter " + ((1>wDateDiff.days)?"tdGreenLight":((3>wDateDiff.days)?"tdOrangeLight":"tdRedLight")) + " lastAccess\\">" + wDate + "<br/><b>" + wDateStr + "</b></td>";\
+            str += "</tr>"; };\
+          }\
+          str += "</tbody>\
+            </table>";\
+          widget.insertAdjacentHTML("afterbegin", str);\
+        }',
+      field: "fullName",
+      calcFn: { fn: "lastconnection", field: "timestamp" },
+    },
+    {
+      type: "graph",
       width: "1012",
       height: "300",
       title: "Last Access & Students",
@@ -733,7 +786,6 @@ function renderDefaultDashboard() {
         },\
         data: [\
           {\
-            type: "line",\
             name: "Students",\
             showInLegend: true,\
             dataPoints: dataPoints\
@@ -745,105 +797,11 @@ function renderDefaultDashboard() {
       calcFn: { fn: "lastconnection", field: "timestamp" },
     },
     {
-      width: "1012",
-      height: "500",
-      title: "Resource - Students Access Chart",
-      tooltip: "A table which represents the amount of times the members of the course have interacted with each resource (including viewing the course).",
-      mode: WIDGET_CODE_SNIPPET,
-      snippet:
-        '{\
-        let widget = document.getElementById("content_%ID%");\
-        let labels = %LABELS%;\
-        let values = %VALUES%;\
-        let height = %HEIGHT% - 130;\
-        let axisX = new Array();\
-        for (let i = 0; i < labels.length; i++) {\
-          for (let prop in values[i]){\
-            axisX[prop] = 0;\
-          }\
-        }\
-        let str = "<table style=\\"min-width:150px\\">\
-            <thead>\
-                <tr>\
-                    <th class=\\"tdLeft resourceStudentsAccessChart\\">Resource</th>";\
-                    for (let prop in axisX){\
-                      str += "<th title=\\"" + prop + "\\" class=\\"tdCenter resourceStudentsAccessChart student\\">" + prop + "</th>";\
-                    };\
-        str += "</tr>\
-            </thead>\
-            <tbody style=\'max-height:"+height+"px\'>";\
-        let maxVal = 0;\
-        let secMaxVal = 0;\
-        for (let i = 0; i < labels.length; i++) {\
-          for (let prop in axisX){\
-            let val = ((undefined!==values[i][prop])?values[i][prop]:0);\
-            if (val > maxVal) {\
-              maxVal = val;\
-            } else if (val > secMaxVal){\
-              secMaxVal = val;\
-            }\
-          };\
-        };\
-        for (let i = 0; i < labels.length; i++) {\
-            str += "<tr>";\
-            str += "<td title=\\"" + labels[i].replace(\'"\',\'"\') + "\\" class=\\"tdLeft resourceStudentsAccessChart resource\\">" + labels[i] + "</td>";\
-            for (let prop in axisX){\
-              let val = ((undefined!==values[i][prop])?values[i][prop]:0);\
-              str += "<td style=\\"background:"+gradientHM(maxVal,secMaxVal,val)+"\\" class=\\"tdCenter resourceStudentsAccessChart student\\">" + val.toLocaleString() + "</td>";\
-            };\
-            str += "</tr>"; };\
-        str += "</tbody>\
-            </table>";\
-        widget.insertAdjacentHTML("afterbegin", str);\
-      }',
-      sortBy: "key",
-      order: "ASC",
-      field: "context",
-      calcFn: { fn: "countgroup", field: "fullName" },
-      filter: { fullName: ["NOT BEGIN (undefined)"] },
-    },
-    {
-      width: "475",
-      height: "500",
-      title: "Student Participation",
-      tooltip:"Total number of interactions between each member of the course and all the resources, including seeing the course.",
-      mode: WIDGET_CODE_SNIPPET,
-      snippet:
-        '{\
-        let interactions = dashb.widgets[2].data.values[0];\
-        let widget = document.getElementById("content_%ID%");\
-        let labels = %LABELS%;\
-        let values = %VALUES%;\
-        let height = %HEIGHT% - 100;\
-        let str = "<table>\
-            <thead>\
-                <tr>\
-                    <th  class=\\"tdLeft studentParticipation student\\">Student</th>\
-                    <th class=\\"tdCenter studentParticipation\\">%</th>\
-                    <th class=\\"tdCenter studentParticipation\\">#</th>\
-                </tr>\
-            </thead>\
-            <tbody style=\'max-height:"+height+"px\'>";\
-        for (let i = 0; i < labels.length; i++) {\
-            let percent = (values[i]*100)/interactions;\
-            str += "<tr>";\
-            str += "<td class=\\"tdLeft studentParticipation student\\">" + labels[i] + "</td>";\
-            str += "<td class=\\"tdCenter " + ((10<percent)?"tdGreenLight":((5<percent)?"tdOrangeLight":"tdRedLight")) + " studentParticipation\\">" + (Math.round(percent*100)/100).toLocaleString() + "%</td>";\
-            str += "<td class=\\"tdCenter studentParticipation\\">" + values[i] + "</td>";\
-            str += "</tr>"; };\
-        str += "</tbody>\
-            </table>";\
-        widget.insertAdjacentHTML("afterbegin", str);\
-      }',
-      sortBy: "key",
-      order: "ASC",
-      field: "fullName",
-    },
-    {
+      type: "graph",
       width: "1062",
       height: "300",
       title: "Student Participation",
-      tooltip:"Pie plot describing the amount of elements the course has.",
+      tooltip:"Pie plot describing the total number of interactions between each member of the course and all the resources, including seeing the course.",
       srcJS: "https://cdn.jsdelivr.net/npm/chart.js@2.8.0",
       srcCSS: "",
       mode: WIDGET_CODE_SNIPPET,
@@ -856,46 +814,7 @@ function renderDefaultDashboard() {
       sortBy: "value",
       order: "DESC",
       field: "fullName",
-      calcFn: { fn: "othersPercentage", field: "fullName" },
-    },
-    {
-      width: "475",
-      height: "500",
-      title: "Members last access",
-      tooltip:"List of each member of the course and the last time they accessed the course.",
-      mode: WIDGET_CODE_SNIPPET,
-      snippet:
-        '{\
-        let interactions = dashb.widgets[2].data.values[0];\
-        let widget = document.getElementById("content_%ID%");\
-        let labels = %LABELS%;\
-        let values = %VALUES%;\
-        let height = %HEIGHT% - 100;\
-        let str = "<table>\
-            <thead>\
-                <tr>\
-                    <th class=\\"tdLeft lastAccess\\">Student</th>\
-                    <th class=\\"tdCenter lastAccess\\">Last Access</th>\
-                </tr>\
-            </thead>\
-            <tbody style=\'max-height:"+height+"px\'>";\
-        for (let i = 0; i < labels.length; i++) {\
-          if (labels[0].length){\
-            let wDate = new Date(values[i]*1000).toLocaleString();\
-            let percent = (values[i]*100)/interactions;\
-            let wDateDiff = new Date().diffTimestamp(values[i]);\
-            let wDateStr = wDateDiff.days+" dies "+wDateDiff.hours+" hores <br />"+wDateDiff.minutes+" minuts, "+Math.floor(wDateDiff.seconds)+" segons";\
-            str += "<tr>";\
-            str += "<td class=\\"tdLeft lastAccess\\">" + labels[i] + "</td>";\
-            str += "<td class=\\"tdCenter " + ((1>wDateDiff.days)?"tdGreenLight":((3>wDateDiff.days)?"tdOrangeLight":"tdRedLight")) + " lastAccess\\">" + wDate + "<br/><b>" + wDateStr + "</b></td>";\
-            str += "</tr>"; };\
-          }\
-          str += "</tbody>\
-            </table>";\
-          widget.insertAdjacentHTML("afterbegin", str);\
-        }',
-      field: "fullName",
-      calcFn: { fn: "lastconnection", field: "timestamp" },
+      calcFn: { fn: "otherspercentage", field: "fullName" },
     },
     {
       html:
@@ -906,6 +825,7 @@ function renderDefaultDashboard() {
       mode: WIDGET_TEXT,
     },
     {
+      type: "extra",
       width: "500",
       height: "500",
       title: "Last interaction with a Resource",
@@ -945,80 +865,7 @@ function renderDefaultDashboard() {
       calcFn: { fn: "lastconnection", field: "timestamp" },
     },
     {
-      width: "500",
-      height: "500",
-      title: "Interactions with Resources",
-      tooltip:"List of each resource in a course and the number of interactions, including viewing the course",
-      mode: WIDGET_CODE_SNIPPET,
-      snippet:
-        '{\
-        let interactions = dashb.widgets[2].data.values[0];\
-        let widget = document.getElementById("content_%ID%");\
-        let labels = %LABELS%;\
-        let values = %VALUES%;\
-        let height = %HEIGHT% - 100;\
-        let str = "<table>\
-            <thead>\
-                <tr>\
-                    <th class=\\"tdLeft\\">Resource</th>\
-                    <th class=\\"tdCenter interactionResource\\">%</th>\
-                    <th class=\\"tdCenter interactionResource\\">#</th>\
-                </tr>\
-            </thead>\
-            <tbody style=\'max-height:"+height+"px\'>";\
-        for (let i = 0; i < labels.length; i++) {\
-            let percent = (values[i]*100)/interactions;\
-            str += "<tr>";\
-            str += "<td class=\\"tdLeft\\">" + labels[i] + "</td>";\
-            str += "<td class=\\"tdCenter " + ((10<percent)?"tdGreenLight":((5<percent)?"tdOrangeLight":"tdRedLight")) + " interactionResource\\">" + (Math.round(percent*100)/100).toLocaleString() + "%</td>";\
-            str += "<td class=\\"tdRight interactionResource\\">" + values[i] + "</td>";\
-            str += "</tr>"; };\
-        str += "</tbody>\
-            </table>";\
-        widget.insertAdjacentHTML("afterbegin", str);\
-      }',
-      sortBy: "key",
-      order: "ASC",
-      field: "context",
-    },
-    {
-      width: "500",
-      height: "500",
-      title: "Interactions with Components",
-      tooltip: "List of different resources used in the course (such as wikis or URL) and the total number of interactions.",
-      mode: WIDGET_CODE_SNIPPET,
-      snippet:
-        '{\
-        let interactions = dashb.widgets[2].data.values[0];\
-        let widget = document.getElementById("content_%ID%");\
-        let labels = %LABELS%;\
-        let values = %VALUES%;\
-        let height = %HEIGHT% - 100;\
-        let str = "<table>\
-            <thead>\
-                <tr>\
-                    <th class=\\"tdLeft\\">Component</th>\
-                    <th class=\\"tdCenter interactionComponents\\">%</th>\
-                    <th class=\\"tdCenter interactionComponents\\">#</th>\
-                </tr>\
-            </thead>\
-            <tbody style=\'max-height:"+height+"px\'>";\
-        for (let i = 0; i < labels.length; i++) {\
-            let percent = (values[i]*100)/interactions;\
-            str += "<tr>";\
-            str += "<td class=\\"tdLeft\\">" + labels[i] + "</td>";\
-            str += "<td class=\\"tdCenter " + ((10<percent)?"tdGreenLight":((5<percent)?"tdOrangeLight":"tdRedLight")) + " interactionComponents\\">" + (Math.round(percent*100)/100).toLocaleString() + "%</td>";\
-            str += "<td class=\\"tdRight interactionComponents\\">" + values[i] + "</td>";\
-            str += "</tr>"; };\
-        str += "</tbody>\
-            </table>";\
-        widget.insertAdjacentHTML("afterbegin", str);\
-      }',
-      sortBy: "key",
-      order: "ASC",
-      field: "component",
-    },
-    {
+      type: "graph",
       width: "1062",
       height: "300",
       title: "Interactions with Components",
@@ -1034,47 +881,11 @@ function renderDefaultDashboard() {
       field: "component",
     },
     {
-      width: "500",
-      height: "500",
-      title: "Interactions with Events",
-      tooltip: "List of different interactions performed on the course by its users and the count for each.",
-      mode: WIDGET_CODE_SNIPPET,
-      snippet:
-        '{\
-        let interactions = dashb.widgets[2].data.values[0];\
-        let widget = document.getElementById("content_%ID%");\
-        let labels = %LABELS%;\
-        let values = %VALUES%;\
-        let height = %HEIGHT% - 100;\
-        let str = "<table>\
-            <thead>\
-                <tr>\
-                    <th class=\\"tdLeft\\">Event</th>\
-                    <th class=\\"tdCenter interactionEvents\\">%</th>\
-                    <th class=\\"tdCenter interactionEvents\\">#</th>\
-                </tr>\
-            </thead>\
-            <tbody style=\'max-height:"+height+"px\'>";\
-        for (let i = 0; i < labels.length; i++) {\
-            let percent = (values[i]*100)/interactions;\
-            str += "<tr>";\
-            str += "<td class=\\"tdLeft\\">" + labels[i] + "</td>";\
-            str += "<td class=\\"tdCenter " + ((10<percent)?"tdGreenLight":((5<percent)?"tdOrangeLight":"tdRedLight")) + " interactionEvents\\">" + (Math.round(percent*100)/100).toLocaleString() + "%</td>";\
-            str += "<td class=\\"tdRight interactionEvents\\">" + values[i] + "</td>";\
-            str += "</tr>"; };\
-        str += "</tbody>\
-            </table>";\
-        widget.insertAdjacentHTML("afterbegin", str);\
-      }',
-      sortBy: "key",
-      order: "ASC",
-      field: "event",
-    },
-    {
+      type: "graph",
       width: "1062",
       height: "300",
       title: "Interactions with Events",
-      tooltip:"Pie plot describing the amount of elements the course has.",
+      tooltip:"Pie plot showing the different interactions performed on the course by its users and the count for each..",
       srcJS: "https://cdn.jsdelivr.net/npm/chart.js@2.8.0",
       srcCSS: "",
       mode: WIDGET_CODE_SNIPPET,
@@ -1084,51 +895,14 @@ function renderDefaultDashboard() {
             canvas.width = '%WIDTH%';\
             canvas.style.width = '%WIDTH%';canvas.height = '%HEIGHT%'-70;canvas.style.height = '%HEIGHT%'-70;document.getElementById('content_%ID%').appendChild(canvas);new Chart(document.getElementById('canvas_%ID%').getContext('2d'), {type: 'pie',options:{tooltips: {bodyFontColor:'#FFFFFF',bodyFontSize:14,bodyFontStyle:'bold',caretSize:0,xPadding:0,yPadding:0},responsive: false,maintainAspectRatio:false,legend:{position:'left'}},data: {labels: %LABELS%,datasets: [{data: %VALUES%,backgroundColor:['rgb(255, 99, 132)','rgb(54, 162, 235)','rgb(255, 205, 86)','rgb(255, 0, 0)','rgb(0, 255, 0)','rgb(0, 0, 255)','rgb(239, 127, 26)','rgb(155, 0, 255)','rgb(255, 0, 225)','rgb(0, 114, 46)','rgb(61, 32, 104)','rgb(128, 64, 0)','rgb(180, 34, 50)']}]}});",
       field: "event",
-      calcFn: { fn: "othersPercentage", field: "event" },
+      calcFn: { fn: "otherspercentage", field: "event" },
     },
     {
-      width: "500",
-      height: "500",
-      title: "Interactions with context",
-      tooltip:"For each element in the course that can be interacted with, it shows the total number of interactions generated from the users.",
-      mode: WIDGET_CODE_SNIPPET,
-      snippet:
-        '{\
-        let interactions = dashb.widgets[2].data.values[0];\
-        let widget = document.getElementById("content_%ID%");\
-        let labels = %LABELS%;\
-        let values = %VALUES%;\
-        let height = %HEIGHT% - 100;\
-        let str = "<table>\
-            <thead>\
-                <tr>\
-                    <th class=\\"tdLeft\\">Context</th>\
-                    <th class=\\"tdCenter interactionContext\\">%</th>\
-                    <th class=\\"tdCenter interactionContext\\">#</th>\
-                </tr>\
-            </thead>\
-            <tbody style=\'max-height:"+height+"px\'>";\
-        for (let i = 0; i < labels.length; i++) {\
-            let percent = (values[i]*100)/interactions;\
-            str += "<tr>";\
-            str += "<td class=\\"tdLeft\\">" + labels[i] + "</td>";\
-            str += "<td class=\\"tdCenter " + ((10<percent)?"tdGreenLight":((5<percent)?"tdOrangeLight":"tdRedLight")) + " interactionContext\\">" + (Math.round(percent*100)/100).toLocaleString() + "%</td>";\
-            str += "<td class=\\"tdRight interactionContext\\">" + values[i] + "</td>";\
-            str += "</tr>"; };\
-        str += "</tbody>\
-            </table>";\
-        widget.insertAdjacentHTML("afterbegin", str);\
-      }',
-      sortBy: "key",
-      order: "ASC",
-      field: "context",
-      filter: { context: ["NOT BEGIN (Curs:)"] },
-    },
-    {
+      type: "graph",
       width: "1062",
       height: "300",
       title: "Interactions with context",
-      tooltip:"Pie plot describing the amount of elements the course has.",
+      tooltip:"Pie plot that shows the total number of interactions generated from the users for each element in the course that can be interacted with.",
       srcJS: "https://cdn.jsdelivr.net/npm/chart.js@2.8.0",
       srcCSS: "",
       mode: WIDGET_CODE_SNIPPET,
@@ -1138,51 +912,15 @@ function renderDefaultDashboard() {
             canvas.width = '%WIDTH%';\
             canvas.style.width = '%WIDTH%';canvas.height = '%HEIGHT%'-70;canvas.style.height = '%HEIGHT%'-70;document.getElementById('content_%ID%').appendChild(canvas);new Chart(document.getElementById('canvas_%ID%').getContext('2d'), {type: 'pie',options:{tooltips: {bodyFontColor:'#FFFFFF',bodyFontSize:14,bodyFontStyle:'bold',caretSize:0,xPadding:0,yPadding:0},responsive: false,maintainAspectRatio:false,legend:{position:'left'}},data: {labels: %LABELS%,datasets: [{data: %VALUES%,backgroundColor:['rgb(255, 99, 132)','rgb(54, 162, 235)','rgb(255, 205, 86)','rgb(255, 0, 0)','rgb(0, 255, 0)','rgb(0, 0, 255)','rgb(239, 127, 26)','rgb(155, 0, 255)','rgb(255, 0, 225)','rgb(0, 114, 46)','rgb(61, 32, 104)','rgb(128, 64, 0)','rgb(180, 34, 50)']}]}});",
       field: "context",
-      calcFn: { fn: "othersPercentage", field: "context" },
+      filter: { context: ["NOT BEGIN (Curso:)"] },
+      calcFn: { fn: "otherspercentage", field: "context" },
     },
     {
-      width: "500",
-      height: "500",
-      title: "Interactions with URL",
-      tooltip:"For each URL in the course that can be interacted, it shows the number of interactions generated from the users.",
-      mode: WIDGET_CODE_SNIPPET,
-      snippet:
-        '{\
-        let interactions = dashb.widgets[2].data.values[0];\
-        let widget = document.getElementById("content_%ID%");\
-        let labels = %LABELS%;\
-        let values = %VALUES%;\
-        let height = %HEIGHT% - 100;\
-        let str = "<table>\
-            <thead>\
-                <tr>\
-                    <th class=\\"tdLeft\\">URL</th>\
-                    <th class=\\"tdCenter interactionURL\\">%</th>\
-                    <th class=\\"tdCenter interactionURL\\">#</th>\
-                </tr>\
-            </thead>\
-            <tbody style=\'max-height:"+height+"px\'>";\
-        for (let i = 0; i < labels.length; i++) {\
-            let percent = (values[i]*100)/interactions;\
-            str += "<tr>";\
-            str += "<td class=\\"tdLeft\\">" + labels[i] + "</td>";\
-            str += "<td class=\\"tdCenter " + ((10<percent)?"tdGreenLight":((5<percent)?"tdOrangeLight":"tdRedLight")) + " interactionURL\\">" + (Math.round(percent*100)/100).toLocaleString() + "%</td>";\
-            str += "<td class=\\"tdRight interactionURL\\">" + values[i] + "</td>";\
-            str += "</tr>"; };\
-        str += "</tbody>\
-            </table>";\
-        widget.insertAdjacentHTML("afterbegin", str);\
-      }',
-      sortBy: "key",
-      order: "ASC",
-      field: "context",
-      filter: { component: ["IN (URL)"] },
-    },
-    {
+      type: "graph",
       width: "1062",
       height: "300",
       title: "Interactions with URL",
-      tooltip:"Pie plot describing the amount of elements the course has.",
+      tooltip:"Pie plot that shows the total number of interactions generated from the users for each URL in the course that can be interacted with..",
       srcJS: "https://cdn.jsdelivr.net/npm/chart.js@2.8.0",
       srcCSS: "",
       mode: WIDGET_CODE_SNIPPET,

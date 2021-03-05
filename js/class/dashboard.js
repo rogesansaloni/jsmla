@@ -201,17 +201,6 @@ class Dashboard {
     reader.readAsText(file);
   }
 
-  /**
-   * Return all the chart's javascript code & data to eval or the report in text format of a widget.
-   * @param {function} callbackJS - The callback Javascript value.
-   * @param {function} callbackText - The callback Text value.
-   */
-  renderAllWidgets(callbackJS, callbackText) {
-    this._widgets.forEach((widget) => {
-      this.renderWidget(widget, callbackJS, callbackText);
-    });
-  }
-
   renderWidget(widget, callbackJS, callbackText) {
     widget.resetLabelsAndValues();
     widget.resetEvals();

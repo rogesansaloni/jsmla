@@ -31,7 +31,7 @@ class Widget
 
             prefix:"widget_",
             delimiter:"%",
-
+            type: "graph",
             width:250,
             height:250,
             size:1,
@@ -101,6 +101,15 @@ class Widget
         // import js and css content if needed
         this.loadJS();
         this.loadCSS();
+    }
+
+    /**
+     * Get the widget type.
+     * @return {string} The type.
+     */
+    get type()
+    {
+        return this.type;
     }
 
     /**
