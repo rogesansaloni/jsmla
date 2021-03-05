@@ -253,7 +253,7 @@ class Dashboard {
   }
 
   /**
-   * Return dashboard as an object.
+   * Return dashboard as an object. (this function is only used when the download button is clicked.)
    */
   toObject() {
     let exportJSON = {
