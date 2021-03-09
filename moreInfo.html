@@ -36,10 +36,8 @@
       <!--<div id="pagination"><span>1</span>/<span>1</span><button class="btn small" onclick=""><i class="fas fa-cog"></i></button></div>-->
       <div id="menu-options">
         <ul style="list-style: none">
-          <li onclick="renderDefaultDashboard();">Render default dashboard</li>
           <!--<li onclick="newWidget()">New widget</li>
                 <li class="separator"></li>-->
-          <li onclick="loadDashboard();">Load dashboard</li>
           <li onclick="saveDashboard();">Save dashboard</li>
         </ul>
         <form style="display: none">
@@ -59,74 +57,17 @@
           <button class="btn small" onclick="dateFilter();">
             <i class="far fa-calendar-alt"></i></button
           ><span id="date-filter"></span>
-          <!--<button class="btn small" onclick="globalFilter();"><i class="fas fa-filter"></i></button>
-                <button class="btn small" title="Render default dashboard" onclick="renderDefaultDashboard();"><i class="fas fa-tachometer-alt"></i></button>
-                <button class="btn small" onclick="newWidget();"><i class="fas fa-plus"></i></button>
-                <button class="btn small" onclick="globalFilter();"><i class="fas fa-filter"></i></button>
-                <button class="btn small" onclick="students();"><i class="fas fa-user-graduate"></i></button>
-                <button class="btn small" onclick="merge();"><i class="fas fa-file-import"></i></button>
-                <button class="btn small" onclick="merge();"><i class="fas fa-file-download"></i></button>-->
         </div>
         <div id="menu-navigator"></div>
       </div>
-      <div id="drop-area">
-        <form>
-          <p>
-            Upload the Moodle log file by clicking the orange button or by
-            dragging and dropping it here
-          </p>
-          <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-around;">
-              <input type="file" id="file-input" />
-              <label for="file-input" class="btn"
-                >upload Moodle course log file</label
-              >
-            <button class='btn_secondary' type="button" onclick="toggleVideoHelp()">?</button>
-          </div>
-          <div style="display: none;" id="reportFileVideoHelp">
-            <div style="position: relative; padding-bottom: 65.21739130434783%; height: 0;"><iframe src="https://www.loom.com/embed/ed2bc470d04c4d02b9825e9954069b41" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
-          </div>
-
-          </form>
-        <div id="file-content">
-          <p id="loading-content">Loading content...</p>
-          <div class="loader">
-            <span id="loader-progress-bar" class="bar"
-              ><span id="loader-my-progress" class="progress"></span
-            ></span>
-          </div>
-        </div>
-      </div>
       <div id="menu-left">
         <ul>
-          <!--<li onclick="newWidget();"><i class="fas fa-plus"></i>New widget</li>
-                <li><i class="fas fa-user-graduate"></i>Load students</li>
-                <li><i class="fas fa-file-import"></i>Import</li>
-                <li class="separator"></li>-->
-          <li onclick="renderDefaultDashboard();this.style.display='none';">
-            <i class="fas fa-tachometer-alt"></i>Default report
-          </li>
-          <li onclick="loadDashboard();">
-            <i class="fas fa-cloud-upload-alt"></i>Load
-          </li>
           <li onclick="saveDashboard();">
             <i class="fas fa-cloud-download-alt"></i>Download
           </li>
         </ul>
       </div>
       <div id="dashboard">
-        <div id="loading-resources">
-          <p>
-            <span id="loading-resources-msg"></span>
-            <span id="loading-resources-n"></span> of
-            <span id="loading-resources-total"></span>
-          </p>
-          <div class="loader">
-            <span id="progress-bar" class="bar">
-              <span id="my-progress" class="progress"></span>
-            </span>
-          </div>
-        </div>
-        <div id="dash-msg"></div>
         <div id="widgets"></div>
       </div>
     </main>

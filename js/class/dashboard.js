@@ -200,12 +200,50 @@ class Dashboard {
 
     reader.readAsText(file);
   }
-
+  
   renderWidget(widget, callbackJS, callbackText) {
     widget.resetLabelsAndValues();
     widget.resetEvals();
-
     widget.evalCSSHTML();
+
+    if (WIDGET_CODE_SNIPPET === widget.mode) {
+      // filter can be an array of filters so dataset can be multiple (i.e. multiple timeline series
+      if (Array.isArray(widget.filter)) {
+        widget.filter.forEach((filter) => {
+          this._msldb.filter(filter);
+          let lvs = this._msldb.labelsAndValues(
+            widget.field,
+            widget.sortBy,
+            widget.order,
+            widget.limit,
+            widget.calcFn
+          );
+          widget.data.labels[widget.data.labels.length] = lvs.labels;
+          widget.data.values[widget.data.values.length] = lvs.values;
+        });
+      } else {
+        this._msldb.filter(widget.filter);
+        widget.data = this._msldb.labelsAndValues(
+          widget.field,
+          widget.sortBy,
+          widget.order,
+          widget.limit,
+          widget.calcFn
+        );
+      }
+      if (widget.data.values.length === 0 && !widget.counter) {
+        widget.visible = false;
+      }
+      callbackJS(widget);
+    } else {
+      callbackText(widget);
+    }
+  }
+
+  renderExtraWidget(widget, callbackJS, callbackText) {
+    widget.resetLabelsAndValues();
+    widget.resetEvals();
+    widget.evalExtraCSSHTML();
 
     if (WIDGET_CODE_SNIPPET === widget.mode) {
       // filter can be an array of filters so dataset can be multiple (i.e. multiple timeline series

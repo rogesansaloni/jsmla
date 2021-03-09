@@ -158,6 +158,33 @@ class Widget
     }
 
     /**
+     * Get the extra widget html value.
+     * @return {string} The html value.
+     */
+     get evaluatedExtraHTML()
+     {
+         return this._evaluatedHTML;
+     }
+ 
+     /**
+      * Get the extra widget css value.
+      * @return {string} The css value.
+      */
+     get evaluatedExtraCSS()
+     {
+         return this._evaluatedCSS;
+     }
+ 
+     /**
+      * Get the extra widget css & html value.
+      * @return {string} The css & htmlvalue.
+      */
+     get evaluatedExtraCSSHTML()
+     {
+         return this._evaluatedCSS + this._evaluatedHTML;
+     }
+
+    /**
      * Get the widget field value.
      * @return {string} The field value.
      */
@@ -327,6 +354,35 @@ class Widget
     {
         this.evalCSS();
         this.evalHTML();
+    }
+
+    /**
+     * Return the javascript of the extra widget HTML once replaced tags.
+     */
+     evalExtraHTML()
+     {
+         this._evaluatedExtraHTML = this._htmlExtra
+            .replace(new RegExp(this._delimiter+"ID"+this._delimiter, 'g'), this._id)
+            .replace(new RegExp(this._delimiter+"CALLBACK"+this._delimiter, 'g'), this._callback)
+            .replace(new RegExp(this._delimiter+"TITLE"+this._delimiter, 'g'), this._title)
+            .replace(new RegExp(this._delimiter+"WIDTH"+this._delimiter, 'g'), (this._width)*this._size)
+            .replace(new RegExp(this._delimiter+"HEIGHT"+this._delimiter, 'g'), this._height*this._size)
+            .replace(new RegExp(this._delimiter+"TEXT_CONTENT"+this._delimiter, 'g'), "")
+            .replace(new RegExp(this._delimiter+"TOOLTIP"+this._delimiter, 'g'),this._tooltip)
+            .replace(new RegExp(this._delimiter+"BUTTON"+this._delimiter, 'g'),this._buttonData);
+             
+         return this._evaluatedExtraHTML;
+     }
+
+    evalExtraCSS()
+    {
+        this._evaluatedExtraCSS = (undefined !== this._css)?"<style type=\"text/css\">"+this._css+"</style>":"";
+    }
+
+    evalExtraCSSHTML()
+    {
+        this.evalExtraHTML();
+        this.evalExtraCSS();
     }
 
     /**
