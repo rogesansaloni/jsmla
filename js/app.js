@@ -138,18 +138,13 @@ var dashb = new Dashboard({
       ',
   htmlExtra:
       '\
-        <div onresize="console.log(\'t\');" class="widget" id="%ID%" style="width:%WIDTH%px;height:%HEIGHT%px;">\n\
-          <div class="widgetHeader">\
-            <h2 id="title_%ID%" onclick="%CALLBACK%(\'%ID%\');" style="white-space:nowrap;overflow:hidden">%TITLE%</h2>\n\
-          </div>\n\
-            <div id="content_%ID%" class="content" style="width:100%;overflow:auto">\n\
-              <div id="rows_%ID%" class="rows"></div>\n\
+        <div onresize="console.log(\'t\');" class="widget" id="%ID%" style="width:98%;height:100%;">\n\
+          <div class="extraWidget" style="width:100%;height:100%">\
+            <div class="widgetHeader">\
+              <h2 id="title_%ID%"" style="white-space:nowrap;overflow:hidden">%TITLE%</h2>\n\
             </div>\n\
-            <a target="_blank" onclick="showMoreInfo(\'%ID%\');" id="button_%ID%" class="btnData">More info</a>\
-        </div>\
-        <div class="tooltip_handler">\
-          <p>?</p>\
-          <p class="tooltip_text" id="tooltip_%ID%"> %TOOLTIP% </p>\
+              <div id="content_%ID%" class="content" style="width:95%;height:100%;overflow:auto"></div>\
+          </div>\
         </div>\
       '
   },
@@ -694,7 +689,7 @@ function renderDefaultDashboard() {
                 }\
                 str += "</tbody>\
                 </table>";\
-              widget.insertAdjacentHTML("afterbegin", str);\
+              widget.insertAdjacentHTML("beforeend", str);\
           }',
       field: "timestamp",
     },
@@ -806,7 +801,7 @@ function renderDefaultDashboard() {
           }\
           str += "</tbody>\
             </table>";\
-          widget.insertAdjacentHTML("afterbegin", str);\
+        widget.insertAdjacentHTML("beforeend", str);\
         }',
       field: "fullName",
       calcFn: { fn: "lastconnection", field: "timestamp" },
@@ -863,7 +858,7 @@ function renderDefaultDashboard() {
             str += "</tr>"; };\
         str += "</tbody>\
             </table>";\
-        widget.insertAdjacentHTML("afterbegin", str);\
+        widget.insertAdjacentHTML("beforeend", str);\
       }',
       sortBy: "key",
       order: "ASC",
@@ -912,7 +907,6 @@ function renderDefaultDashboard() {
           }\
           str += "</tbody>\
             </table>";\
-          widget.insertAdjacentHTML("afterbegin", str);\
         }',
       field: "context",
       calcFn: { fn: "lastconnection", field: "timestamp" },
@@ -965,7 +959,7 @@ function renderDefaultDashboard() {
             str += "</tr>"; };\
         str += "</tbody>\
             </table>";\
-        widget.insertAdjacentHTML("afterbegin", str);\
+        widget.insertAdjacentHTML("beforeend", str);\
       }',
       sortBy: "key",
       order: "ASC",
@@ -1020,7 +1014,7 @@ function renderDefaultDashboard() {
             str += "</tr>"; };\
         str += "</tbody>\
             </table>";\
-        widget.insertAdjacentHTML("afterbegin", str);\
+        widget.insertAdjacentHTML("beforeend", str);\
       }',
       sortBy: "key",
       order: "ASC",
@@ -1076,7 +1070,7 @@ function renderDefaultDashboard() {
             str += "</tr>"; };\
         str += "</tbody>\
             </table>";\
-        widget.insertAdjacentHTML("afterbegin", str);\
+        widget.insertAdjacentHTML("beforeend", str);\
       }',
       sortBy: "key",
       order: "ASC",
@@ -1132,7 +1126,7 @@ function renderDefaultDashboard() {
             str += "</tr>"; };\
         str += "</tbody>\
             </table>";\
-        widget.insertAdjacentHTML("afterbegin", str);\
+        widget.insertAdjacentHTML("beforeend", str);\
       }',
       sortBy: "key",
       order: "ASC",
@@ -1170,7 +1164,6 @@ function renderDefaultDashboard() {
             str += "</tr>"; };\
         str += "</tbody>\
             </table>";\
-        widget.insertAdjacentHTML("afterbegin", str);\
       }',
       sortBy: "key",
       order: "ASC",
@@ -1208,7 +1201,6 @@ function renderDefaultDashboard() {
             str += "</tr>"; };\
         str += "</tbody>\
             </table>";\
-        widget.insertAdjacentHTML("afterbegin", str);\
       }',
       sortBy: "key",
       order: "ASC",
@@ -1862,10 +1854,10 @@ function showMoreInfo(widgetId) {
   var target="_blank";
   var widgetInfoId = 'widget_' + (parseInt(widgetId.slice(7, widgetId.length)) + 1);
   var widget = dashb.getWidgetById(widgetInfoId);
-  console.log(widget);
   dashb.modal.headerContent = widget._title;
-  dashb.renderExtraWidget(widget, renderJSWidget, renderTextWidget);
-  dashb.modal.content = widget._evaluatedHTML;
+  widget.evalExtraCSSHTML();
+  dashb.modal.content = widget.evaluatedExtraHTML;
+  widget = dashb.renderExtraWidget(widget, renderJSWidget, renderTextWidget);
   dashb.modal.show();
   //var myWindow = window.open(href,target,"width=600,height=400,left=50,top=50,toolbar=yes");
 }

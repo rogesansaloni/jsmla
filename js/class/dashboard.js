@@ -277,6 +277,7 @@ class Dashboard {
     } else {
       callbackText(widget);
     }
+    return widget;
   }
 
   /**

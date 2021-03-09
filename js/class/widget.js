@@ -163,7 +163,7 @@ class Widget
      */
      get evaluatedExtraHTML()
      {
-         return this._evaluatedHTML;
+         return this._evaluatedExtraHTML;
      }
  
      /**
@@ -172,7 +172,7 @@ class Widget
       */
      get evaluatedExtraCSS()
      {
-         return this._evaluatedCSS;
+         return this._evaluatedExtraCSS;
      }
  
      /**
@@ -181,7 +181,7 @@ class Widget
       */
      get evaluatedExtraCSSHTML()
      {
-         return this._evaluatedCSS + this._evaluatedHTML;
+         return this._evaluatedExtraCSS + this._evaluatedExtraHTML;
      }
 
     /**
@@ -365,11 +365,7 @@ class Widget
             .replace(new RegExp(this._delimiter+"ID"+this._delimiter, 'g'), this._id)
             .replace(new RegExp(this._delimiter+"CALLBACK"+this._delimiter, 'g'), this._callback)
             .replace(new RegExp(this._delimiter+"TITLE"+this._delimiter, 'g'), this._title)
-            .replace(new RegExp(this._delimiter+"WIDTH"+this._delimiter, 'g'), (this._width)*this._size)
-            .replace(new RegExp(this._delimiter+"HEIGHT"+this._delimiter, 'g'), this._height*this._size)
             .replace(new RegExp(this._delimiter+"TEXT_CONTENT"+this._delimiter, 'g'), "")
-            .replace(new RegExp(this._delimiter+"TOOLTIP"+this._delimiter, 'g'),this._tooltip)
-            .replace(new RegExp(this._delimiter+"BUTTON"+this._delimiter, 'g'),this._buttonData);
              
          return this._evaluatedExtraHTML;
      }
