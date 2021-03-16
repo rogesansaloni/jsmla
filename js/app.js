@@ -143,7 +143,10 @@ var dashb = new Dashboard({
             <div class="widgetHeader">\
               <h2 id="title_%ID%"" style="white-space:nowrap;overflow:hidden">%TITLE%</h2>\n\
             </div>\n\
+            <div id="widgetContent" style="overflow:auto">\
+              <div id="description" class="widgetDescription" style="width:95%;height:100%;overflow:auto">%DESCRIPTION%</div>\
               <div id="content_%ID%" class="content" style="width:95%;height:100%;overflow:auto"></div>\
+            <div>\
           </div>\
         </div>\
       '
@@ -771,7 +774,7 @@ function renderDefaultDashboard() {
       width: "475",
       height: "500",
       title: "Members last access",
-      tooltip:"List of each member of the course and the last time they accessed the course.",
+      description:"The graph you have seen shows on a time axis the number of students who have last accessed the course on different days.\n\nThe table below shows the names of the different members of the course, as well as their last access, sorted from most recent to oldest.",
       mode: WIDGET_CODE_SNIPPET,
       snippet:
         '{\

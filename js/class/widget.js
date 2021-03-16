@@ -32,6 +32,7 @@ class Widget
             prefix:"widget_",
             delimiter:"%",
             type: "graph",
+            description: "",
             width:250,
             height:250,
             size:1,
@@ -366,6 +367,7 @@ class Widget
             .replace(new RegExp(this._delimiter+"CALLBACK"+this._delimiter, 'g'), this._callback)
             .replace(new RegExp(this._delimiter+"TITLE"+this._delimiter, 'g'), this._title)
             .replace(new RegExp(this._delimiter+"TEXT_CONTENT"+this._delimiter, 'g'), "")
+            .replace(new RegExp(this._delimiter+"DESCRIPTION"+this._delimiter, 'g'), this._description)
              
          return this._evaluatedExtraHTML;
      }
