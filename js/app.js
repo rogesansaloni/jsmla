@@ -774,7 +774,7 @@ function renderDefaultDashboard() {
       width: "475",
       height: "500",
       title: "Members last access",
-      description:"The graph you have seen shows on a time axis the number of students who have last accessed the course on different days.\n\nThe table below shows the names of the different members of the course, as well as their last access, sorted from most recent to oldest.",
+      description:"The graph you have seen shows on a time axis the number of students who have last accessed the course on different days. <br><br> The table below shows the names of the different members of the course, as well as their last access, sorted from most recent to oldest.",
       mode: WIDGET_CODE_SNIPPET,
       snippet:
         '{\
@@ -834,7 +834,7 @@ function renderDefaultDashboard() {
       width: "475",
       height: "500",
       title: "Student Participation",
-      tooltip:"Total number of interactions between each member of the course and all the resources, including seeing the course.",
+      description:"The graph you have seen shows on a time axis the number of students who have last accessed the course on different days. <br><br> The table below shows the names of the different members of the course, as well as their last access, sorted from most recent to oldest.",
       mode: WIDGET_CODE_SNIPPET,
       snippet:
         '{\
