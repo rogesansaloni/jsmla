@@ -452,14 +452,12 @@ class MoodleStandardLogsDataBase {
     let newLabels = new Array();
 
     let sumValues = 0;
-    // count duplicates
 
     this._logs.forEach(function (obj) {
       labels[obj[field]] = (labels[obj[field]] || 0) + 1;
       sumValues += 1;
     });
 
-    // new dataset is {key:'', value:0}
     for (var prop in labels) {
       newLabels.push({ key: prop, value: labels[prop] });
     }
