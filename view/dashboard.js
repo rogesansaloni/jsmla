@@ -18,9 +18,6 @@ class Dashboard {
     /** @type {object} */
     this._gobalCfg = dashbConfig.global;
 
-    /** @type {BrowserStorage} */
-    this._bstorage = new BrowserStorage();
-
     /** @type {array} */
     this._widgets = new Array();
 
