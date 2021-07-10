@@ -130,7 +130,7 @@ var dashb = new Dashboard({
             <div id="content_%ID%" class="content" style="width:100%;overflow:auto">\n\
               <div id="rows_%ID%" class="rows"></div>\n\
             </div>\n\
-            <a target="_blank" onclick="showMoreInfo(\'%ID%\');" id="button_%ID%" class="btnData">More info</a>\
+            <a target="_blank" id="button_%ID%" class="btnData">More info</a>\
         </div>\
         <div class="tooltip_handler">\
           <p>?</p>\
@@ -1214,58 +1214,6 @@ function renderDefaultDashboard() {
   ];
 
   widgets = widgets.concat(widgetsTemplate);
-
-  /* SEMANA VISTA */
-  /*
-    for (let i = 0; i < 7; i++)
-    {
-      var dateOffset = (24*60*60*1000) * i; // i days
-      var d = new Date();
-      d.setTime(d.getTime() - dateOffset);
-
-      let title = [{
-        html:'<div style="flex-basis: 100%;">\
-        <h1>Dashboard ' + d.toLocaleString() + '</h1>\
-        </div>'
-        ,mode:DASHBOARD_WIDGET_TEXT
-      }];
-      widgets = widgets.concat(title);
-
-      // source: https://github.com/jashkenas/underscore/blob/master/underscore.js#L1320
-      function isObject(obj) {
-        var type = typeof obj;
-        return type === 'function' || type === 'object' && !!obj;
-      };
-      function iterationCopy(src) {
-        let target = {};
-        for (let prop in src) {
-          if (src.hasOwnProperty(prop)) {
-            // if the value is a nested object, recursively copy all it's properties
-            if (isObject(src[prop])) {
-              target[prop] = iterationCopy(src[prop]);
-            } else {
-              target[prop] = src[prop];
-            }
-          }
-        }
-        return target;
-      }
-
-
-      let wtDates = [];
-      for (let j = 1; j < widgetsTemplate.length; j++)
-      {
-        wtDates[j-1] = iterationCopy(widgetsTemplate[j]);
-      }
-
-      let filterDateFromTo = d.getFullYear()+''+((d.getMonth()+1<10)?('0'+(d.getMonth()+1)):(d.getMonth()+1))+''+((d.getDate()<10)?'0'+d.getDate():d.getDate());
-      for (let k = 0; k < wtDates.length; k++)
-      {
-        wtDates[k].filter = {yearMonthDay:['>= ('+filterDateFromTo+') && <= ('+filterDateFromTo+')']};
-      }
-      
-      widgets = widgets.concat(wtDates);
-    }*/
 
   createWidgets(widgets);
 
